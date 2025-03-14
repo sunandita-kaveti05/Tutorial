@@ -1,0 +1,151 @@
+const express = require('express');
+const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
+const { body, validationResult } = require('express-validator');  // For validation
+
+const app = express();
+const port = 3000;
+
+// MySQL Connection
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '', // Update with your MySQL root password
+  database: 'users_db'
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('MySQL connection error:', err);
+    return;
+  }
+  console.log('MySQL Connected...');
+});
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Register User with validation
+app.post('/register', [
+  body('username').notEmpty().withMessage('Username is required'),
+  body('email').isEmail().withMessage('Enter a valid email'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { username, email, password } = req.body;
+
+  // Hash the password
+  bcrypt.hash(password, 10, (err, hash) => {
+    if (err) {
+      console.error('Hashing error:', err);
+      return res.status(500).json({ error: 'Error hashing password' });
+    }
+
+    const sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+    db.query(sql, [username, email, hash], (err, result) => {
+      if (err) {
+        console.error('Database insertion error:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.json({ message: 'User registered successfully!' });
+    });
+  });
+});
+
+// Login User with validation
+app.post('/login', [
+  body('email').isEmail().withMessage('Enter a valid email'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+
+  const sql = 'SELECT * FROM users WHERE email = ?';
+  db.query(sql, [email], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+
+    // Compare hashed password
+    bcrypt.compare(password, results[0].password, (err, match) => {
+      if (err) {
+        console.error('Password comparison error:', err);
+        return res.status(500).json({ error: 'Password comparison error' });
+      }
+
+      if (match) {
+        // Update last login time
+        const lastLoginSql = 'UPDATE users SET last_login = ? WHERE email = ?';
+        const currentDateTime = new Date(); // Get current date and time
+
+        db.query(lastLoginSql, [currentDateTime, email], (err, result) => {
+          if (err) {
+            console.error('Error updating last login time:', err);
+            return res.status(500).json({ error: 'Error updating last login time' });
+          }
+
+          // Log result to check if any rows were affected
+          console.log('Last login updated for user:', email, 'Result:', result);
+
+          res.json({
+            message: 'Login successful!',
+            email: results[0].email,
+            last_login: currentDateTime // Optional: include last login time in response
+          });
+        });
+      } else {
+        res.status(400).json({ error: 'Incorrect password' });
+      }
+    });
+  });
+});
+
+// Logout user
+// Logout user
+app.post('/logout', (req, res) => {
+  const email = req.body.email; // Assuming the email is sent in the request body
+
+  // Get current date and time for logout
+  const logoutTime = new Date();
+
+  // Update the logout time in the database
+  const sql = 'UPDATE users SET logout_time = ? WHERE email = ?';
+  
+  db.query(sql, [logoutTime, email], (err, result) => {
+    if (err) {
+      console.error('Error updating logout time:', err);
+      return res.status(500).json({ error: 'Error updating logout time' });
+    }
+
+    // Invalidate user session or token if necessary
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Logout failed' });
+      }
+      res.json({ message: 'Logout successful' });
+    });
+  });
+});
+
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
