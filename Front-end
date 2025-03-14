@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Tutorial</title>
+    <style>
+        body {
+background: linear-gradient(to left, #e0f7ff, #8ecae6);
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #FFC371;
+        }
+
+        .login-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background-color: white;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            z-index: 1001;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .popup h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .popup input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .popup button {
+            padding: 10px;
+            font-size: 1rem;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup button:hover {
+            background-color: #0056b3;
+        }
+
+        .close-btn {
+            background-color: #FF5F6D;
+            color: white;
+        }
+
+        .close-btn:hover {
+            background-color: #e64554;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            margin-top: 100px;
+        }
+
+        .title-section {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 7rem;
+            font-weight: 300;
+            animation: fall 1s ease forwards;
+            text-align: left;
+            margin-right: 50px;
+        }
+
+        .definition {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            text-align: left;
+            max-width: 400px;
+            animation: fadeIn 1s ease forwards;
+            margin-top: 20px;
+        }
+
+        .resources {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .resources ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .resources li {
+            margin: 10px 0;
+        }
+
+        /* Study Section Styles */
+        .study-section {
+            margin-top: 60px; /* Space above the section */
+            text-align: center;
+        }
+
+        .study-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Gap between cards */
+            padding: 20px;
+        }
+
+        .card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transition */
+    cursor : pointer;
+}
+
+/* Hover effect for floating */
+.card:hover {
+    transform: translateY(-10px); /* Float up */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.9); /* Enhanced shadow effect */
+}
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 20px;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .progress {
+            background-color: #4CAF50; /* Green progress */
+            height: 100%;
+            width: 0%; /* Initial width to show progress */
+            border-radius: 5px;
+        }
+
+        .explore-btn {
+            margin-top: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .explore-btn:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -100px;
+                opacity: 0;
+            }
+            100% {
+                top: 0;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+/* Style for user menu (logout dropdown) */
+.user-menu {
+    position: absolute;
+    top: 50px; /* Adjust as per your layout */
+    right: 20px; /* Adjust as per your layout */
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1002;
+}
+
+.user-menu button {
+    background-color: #FF5F6D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.user-menu button:hover {
+    background-color: #e64554;
+}
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="#title-section">Home</a>
+        <a href="#study">Study</a>
+        <a href="#resources">Learning Resources</a>
+        <button class="login-btn" onclick="togglePopup()">Login/Register</button>
+               
+ <!-- User menu container, initially hidden -->
+    <div id="user-menu" class="user-menu" style="display: none;">
+        <button onclick="confirmLogout()">Logout</button>
+    </div>
+    </nav>
+
+    <!-- Login/Sign-up Popup -->
+    <div id="popup" class="popup">
+        <h2 id="popup-title">Select an option</h2>
+        <button onclick="showLoginForm()">Login</button>
+        <button onclick="showSignupForm()">Register</button>
+        
+<form id="login-form" action="http://localhost:3000/register" method="POST" onsubmit="return validateLogin(event)" style="display:none;">
+
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <form id="signup-form" action="http://localhost:3000/register" method="POST" onsubmit="return validateSignup()" style="display:none;">
+            <input type="text" id="signup-name" placeholder="Full Name" required>
+            <input type="email" id="signup-email" placeholder="Email" required>
+            <input type="password" id="signup-password" placeholder="Password" required>
+            <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <button class="close-btn" onclick="togglePopup()">Close</button>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <div class="content">
+        <!-- Title Section -->
+        <div id="title-section" class="title-section">
+            <div class="title">
+                Machine<br>
+                Learning
+            </div>
+            <div class="definition">
+                Machine Learning is a subset of artificial intelligence that involves the use of algorithms and statistical models to enable computers to perform tasks without explicit instructions, relying on patterns and inference instead.
+            </div>
+        </div>
+
+        <!-- Study Section -->
+        <div id="study" class="study-section">
+            <h1 class="resources">Study</h1>
+            <div class="study-cards">
+                <div class="card">
+                    <h3>Maths</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 70%;"></div>
+                    </div>
+                 <!-- Update the Explore button in each card -->
+<button class="explore-btn" onclick="location.href='Math.html?topic=maths'">Explore</button>
+
+                </div>
+                <div class="card">
+                    <h3>Python</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 50%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>ML Basics</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 80%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>Supervised</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>Unsupervised</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 40%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>Deep Learning</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>Reinforcement Learning</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 20%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+                <div class="card">
+                    <h3>NLP</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 30%;"></div>
+                    </div>
+                    <button class="explore-btn">Explore</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Resources Section -->
+        <div id="resources" class="resources">
+            <h2>Further Learning Resources</h2>
+            <ul>
+                <li><a href="https://www.coursera.org/learn/machine-learning">Coursera: Machine Learning by Andrew Ng</a></li>
+                <li><a href="https://www.edx.org/course/machine-learning-fundamentals">edX: Machine Learning Fundamentals</a></li>
+                <li><a href="https://www.kaggle.com/learn/overview">Kaggle: Learn Machine Learning</a></li>
+                <li><a href="https://www.deeplearning.ai/ai-for-everyone/">DeepLearning.AI: AI for Everyone</a></li>
+                <li><a href="https://www.amazon.com/Machine-Learning-Pattern-Recognition-Statistics/dp/1449369887">Book: Pattern Recognition and Machine Learning by Christopher Bishop</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function togglePopup() {
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('overlay');
+            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        }
+    
+        function showLoginForm() {
+            document.getElementById('popup-title').textContent = 'Login';
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+    
+        function showSignupForm() {
+            document.getElementById('popup-title').textContent = 'Sign Up';
+            document.getElementById('signup-form').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+        }
+    
+        
+    </script>
+    
+</body>
+</html>    
