@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics for Machine Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <style>
+        body {
+background: linear-gradient(to left, #e0f7ff, #8ecae6);
+
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+        }
+        .topic {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .topic h2 {
+            font-size: 2rem;
+            margin: 0;
+            cursor: pointer; /* Make it clear it's clickable */
+        }
+        .topic p {
+            font-size: 1.2rem;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mathematics for Machine Learning</h1>
+    </header>
+
+    <div class="topic">
+        <input type="checkbox" id="linear-algebra" onchange="navigateTo('linear.html')" />
+        <label for="linear-algebra" onclick="navigateTo('linear.html')">Linear Algebra</label>
+        <p>Linear algebra is the study of vectors, vector spaces, and linear transformations...</p>
+    </div>
+
+    <div class="topic">
+        <input type="checkbox" id="calculus" onchange="navigateTo('calculus.html')" />
+        <label for="calculus" onclick="navigateTo('calculus.html')">Calculus</label>
+        <p>Calculus, particularly differentiation and integration...</p>
+    </div>
+
+    <div class="topic">
+        <input type="checkbox" id="probability-statistics" onchange="navigateTo('probability-statistics.html')" />
+        <label for="probability-statistics" onclick="navigateTo('probability-statistics.html')">Probability and Statistics</label>
+        <p>Probability provides a framework for dealing with uncertainty...</p>
+    </div>
+
+    <div class="topic">
+        <input type="checkbox" id="optimization" onchange="navigateTo('optimization.html')" />
+        <label for="optimization" onclick="navigateTo('optimization.html')">Optimization</label>
+        <p>Optimization techniques are used to find the best parameters for machine learning models...</p>
+    </div>
+
+    <div class="topic">
+        <input type="checkbox" id="discrete-mathematics" onchange="navigateTo('discrete-mathematics.html')" />
+        <label for="discrete-mathematics" onclick="navigateTo('discrete-mathematics.html')">Discrete Mathematics</label>
+        <p>Discrete mathematics includes topics like set theory, combinatorics, and graph theory...</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Mathematics for Machine Learning</p>
+    </footer>
+
+    <script>
+        // Mark the checkbox as checked if the user has visited the page
+        document.addEventListener("DOMContentLoaded", function() {
+            const topics = ['linear-algebra', 'calculus', 'probability-statistics', 'optimization', 'discrete-mathematics'];
+            topics.forEach(topic => {
+                if (localStorage.getItem(topic)) {
+                    document.getElementById(topic).checked = true;
+                }
+            });
+        });
+
+        function navigateTo(page) {
+            // Mark the topic as learned in localStorage
+            const topic = page.split('.')[0]; // Get the topic name from the page
+            localStorage.setItem(topic, 'learned');
+            window.location.href = page; // Redirect to the topic page
+        }
+    </script>
+</body>
+</html>
